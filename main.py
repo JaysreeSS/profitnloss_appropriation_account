@@ -112,69 +112,60 @@ if net_pr_lo==1:
     dr_ = dr_int_cap + dr_sal + dr_com + gr # Calculating Debit side
     cr_ = net_pr + cr_int_draw # Calculating Credit side
 
-    if cr_ > dr_ :
-        pr = cr_ - dr_
+    pr = cr_ - dr_
 
-        # Inserting Values
-        code4='''insert into account values ("To Interest on Capital A/c", '{0}',
-        "By Profit and Loss A/c (Net Profit)", '{1}')'''. format(dr_int_cap, net_pr)
-        mycursor.execute(code4)
+    # Inserting Values
+    code4='''insert into account values ("To Interest on Capital A/c", "{0}", "By Profit and Loss A/c (Net Profit)", "{1}")'''. format(dr_int_cap, net_pr)
+    mycursor.execute(code4)
 
-        if dr_sal!=0 and dr_com==0 and cr_int_draw==0 :
-            code5='''insert into account (Dr_Particulars,Dr_Amount)
-            values ("To Salary A/c", '{0}')'''. format(dr_sal)
-            mycursor.execute(code5)
+    if dr_sal!=0 and dr_com==0 and cr_int_draw==0 :
+        code5='''insert into account (Dr_Particulars, Dr_Amount) values ("To Salary A/c", "{0}")'''. format(dr_sal)
+        mycursor.execute(code5)
 
-        if dr_sal==0 and dr_com!=0 and cr_int_draw==0 :
-            code6='''insert into account (Dr_Particulars,Dr_Amount)
-            values ("By Commission A/c", '{0}')'''. format(dr_com)
-            mycursor.execute(code6)
+    if dr_sal==0 and dr_com!=0 and cr_int_draw==0 :
+        code6='''insert into account (Dr_Particulars, Dr_Amount) values ("To Commission A/c", "{0}")'''. format(dr_com)
+        mycursor.execute(code6)
 
-        if dr_sal==0 and dr_com==0 and cr_int_draw!=0 :
-            code7='''insert into account (Cr_Particulars,Cr_Amount)
-            values ("By Interest on Drawings A/c", '{0}')'''. format(cr_int_draw)
-            mycursor.execute(code7)
+    if dr_sal==0 and dr_com==0 and cr_int_draw!=0 :
+        code7='''insert into account (Cr_Particulars, Cr_Amount) values ("By Interest on Drawings A/c", "{0}")'''. format(cr_int_draw)
+        mycursor.execute(code7)
 
-        if dr_sal!=0 and dr_com!=0 and cr_int_draw==0 :
-            code8='''insert into account (Dr_Particulars,Dr_Amount) values
-            ("To Salary A/c", '{0}'), ("To Commission A/c", '{1}')'''. format(dr_sal, dr_com)
-            mycursor.execute(code8)
+    if dr_sal!=0 and dr_com!=0 and cr_int_draw==0 :
+        code81='''insert into account (Dr_Particulars, Dr_Amount) values ("To Salary A/c", "{0}")'''. format(dr_sal)
+        mycursor.execute(code81)
+        code82='''insert into account (Dr_Particulars, Dr_Amount) values ("To Commission A/c", "{0}")'''. format(dr_com)
+        mycursor.execute(code82)
 
-        if dr_sal!=0 and dr_com==0 and cr_int_draw!=0 :
-            code9='''insert into account values ("To Salary A/c", '{0}',
-            "By Interest on Drawings A/c", '{1}' )'''. format(dr_sal, cr_int_draw)
-            mycursor.execute(code9)
+    if dr_sal!=0 and dr_com==0 and cr_int_draw!=0 :
+        code9='''insert into account values ("To Salary A/c", "{0}", "By Interest on Drawings A/c", "{1}")'''. format(dr_sal, cr_int_draw)
+        mycursor.execute(code9)
 
-        if dr_sal==0 and dr_com!=0 and cr_int_draw!=0 :
-            code10='''insert into account values ("To Commission A/c", '{0}',
-            "By Interest on Drawings A/c", '{1}' )'''. format(dr_com, cr_int_draw)
-            mycursor.execute(code10)
+    if dr_sal==0 and dr_com!=0 and cr_int_draw!=0 :
+        code10='''insert into account values ("To Commission A/c", "{0}", "By Interest on Drawings A/c", "{1}" )'''. format(dr_com, cr_int_draw)
+        mycursor.execute(code10)
 
-        if dr_sal!=0 and dr_com!=0 and cr_int_draw!=0 :
-            code11='''insert into account values ("To Salary A/c", '{0}',
-            "By Interest on Drawings A/c", '{1}' )'''. format(dr_sal, cr_int_draw)
-            mycursor.execute(code11)
+    if dr_sal!=0 and dr_com!=0 and cr_int_draw!=0 :
+        code11='''insert into account values ("To Salary A/c", "{0}", "By Interest on Drawings A/c", "{1}")'''. format(dr_sal, cr_int_draw)
+        mycursor.execute(code11)
 
-            code12='''insert into account( Dr_Particulars,Dr_Amount)
-            values ("To Commission A/c", '{0}')'''. format(dr_com)
-            mycursor.execute(code12)
+        code12='''insert into account( Dr_Particulars, Dr_Amount) values ("To Commission A/c", "{0}")'''. format(dr_com)
+        mycursor.execute(code12)
 
-        # Inserting General Reserve
-        code13='''insert into account (Dr_Particulars,Dr_Amount)
-        values ("To General Reserve A/c", '{0}')'''. format(gr)
+    # Inserting General Reserve
+    if gr:
+        code13='''insert into account (Dr_Particulars, Dr_Amount) values ("To General Reserve A/c", "{0}")'''. format(gr)
         mycursor.execute(code13)
 
-        # Inserting Distribution of Profits
-        code14='''insert into account (Dr_Particulars)
-        values ("To Profit transferred to Partners' Capital A/c")''' 
+    # Inserting Distribution of Profits
+    if pr > 0: 
+        code14='''insert into account (Dr_Particulars) values ("To Profit transferred to Partners' Capital A/c")''' 
         mycursor.execute(code14)
 
         if psr==1:
             equally = round(pr/no_partner)
             
             for key1 in d_cap:
-                code15='''insert into account (Dr_Particulars,Dr_Amount)
-                values ('{0}', '{1}')'''. format(key1, equally)
+                code15='''insert into account (Dr_Particulars, Dr_Amount) values ("{0}", "{1}")'''. format(key1, equally)
                 mycursor.execute(code15)
 
         if psr==2:
@@ -182,83 +173,76 @@ if net_pr_lo==1:
             for key2 in d_psr:
                 res_ratio = round(pr/total_ratio * d_psr[key2])
 
-                code16='''insert into account (Dr_Particulars,Dr_Amount)
-                values ('{0}', '{1}')'''. format(key2, res_ratio)
+                code16='''insert into account (Dr_Particulars, Dr_Amount) values ("{0}", "{1}")'''. format(key2, res_ratio)
                 mycursor.execute(code16)
 
-        # Inserting Total
-        code17='''insert into account (Dr_Amount,Cr_Amount)
-        values ('{0}', '{1}')'''. format('---------', '---------')
-        mycursor.execute(code17)
+    # Inserting Total
+    code17='''insert into account (Dr_Amount, Cr_Amount) values ("{0}", "{1}")'''. format('---------', '---------')
+    mycursor.execute(code17)
 
-        total = cr_
+    total = cr_ if cr_ >= dr_ else dr_
 
-        code18='''insert into account (Dr_Amount,Cr_Amount)
-        values ('{0}', '{1}')'''. format(total, total)
-        mycursor.execute(code18)
+    code18='''insert into account (Dr_Amount, Cr_Amount) values ("{0}", "{1}")'''. format(total, total)
+    mycursor.execute(code18)
 
-        code19='''insert into account (Dr_Amount,Cr_Amount)
-        values ('{0}', '{1}')'''. format('---------', '---------')
-        mycursor.execute(code19)
-        
-        # Displaying the Table in Python
-        mycursor.execute('select * from account')
-        rows = mycursor.fetchall()
+    code19='''insert into account (Dr_Amount, Cr_Amount) values ("{0}", "{1}")'''. format('---------', '---------')
+    mycursor.execute(code19)
+    
+    # Displaying the Table in Python
+    mycursor.execute('select * from account')
+    rows = mycursor.fetchall()
 
-        print('\n\t\t\t\t\t\tBooks of {}'. format(name_firm) )
-        print('\t\t\t\t\t     Profit and Loss Appropriation A/c')
-        print('\t\t\t\t\t    for the year ended {}'. format(year) )
-       
-        print(tabulate(rows, headers=['Dr_Particulars','Dr_Amount',
-                                          'Cr_Particulars','Cr_Amount'],
-                       tablefmt='psql'))
+    print('\n\t\t\t\t\t\tBooks of {}'. format(name_firm) )
+    print('\t\t\t\t\t     Profit and Loss Appropriation A/c')
+    print('\t\t\t\t\t    for the year ended {}'. format(year) )
+   
+    print(tabulate(rows, headers=['Dr_Particulars','Dr_Amount', 'Cr_Particulars','Cr_Amount'],
+                   tablefmt='psql'))
 
-        # Working Notes
-        print('\nWorking Notes:-')
-        
-        print('-> Interest on Capital:')
-        for k in d_cap:
-            print('\t', k, '-Rs.', d_cap[k][1])
+    # Working Notes
+    print('\nWorking Notes:-')
+    
+    print('-> Interest on Capital:')
+    for k in d_cap:
+        print('\t', k, '-Rs.', d_cap[k][1])
 
-        if dr_sal!=0 :
-            print('-> Salary:')
-            for l in d_sal:
-                print('\t', l, '-Rs.', d_sal[l])
+    if dr_sal!=0 :
+        print('-> Salary:')
+        for l in d_sal:
+            print('\t', l, '-Rs.', d_sal[l])
 
-        if dr_com!=0 :
-            print('-> Commission:')
-            for m in d_com:
-                print('\t', m, '-Rs.', d_com[m])
+    if dr_com!=0 :
+        print('-> Commission:')
+        for m in d_com:
+            print('\t', m, '-Rs.', d_com[m])
 
-        if cr_int_draw!=0:
-            print('-> Interest on Drawings:')
-            for n in d_draw:
-                print('\t', n, '-Rs.', d_draw[n][1])
+    if cr_int_draw!=0:
+        print('-> Interest on Drawings:')
+        for n in d_draw:
+            print('\t', n, '-Rs.', d_draw[n][1])
 
-        print('------------------------------')
+    print('------------------------------')
 
-        ch=input('\nDo you want to make any changes in General Reserve (y/n)? ')
-        if ch=='y':
-            m=input('\nDo you want to maintain General Reserve (y/n)? ')
+    ch=input('\nDo you want to make any changes in General Reserve (y/n)? ')
+    if ch=='y':
+        m=input('\nDo you want to maintain General Reserve (y/n)? ')
 
-            #Updating General Reserve
-            if m=='y':                
-                u=int(input('\nEnter the amount to be updated: '))
-                code20='''update account set Dr_Amount='{0}'
-                where Dr_Particulars = "To General Reserve A/c" '''. format(u)
-                mycursor.execute(code20)
+        #Updating General Reserve
+        if m=='y':                
+            u=int(input('\nEnter the amount to be updated: '))
+            code20='''update account set Dr_Amount="{0}" where Dr_Particulars = "To General Reserve A/c" '''. format(u)
+            mycursor.execute(code20)
 
-                dr_ = dr_int_cap + dr_sal + dr_com + u # Calculating Debit side
-                cr_ = net_pr + cr_int_draw # Calculating Credit side
+            dr_ = dr_int_cap + dr_sal + dr_com + u # Calculating Debit side
+            cr_ = net_pr + cr_int_draw # Calculating Credit side
 
-                pr = cr_ - dr_
-
+            pr = cr_ - dr_
+            if pr > 0:
                 if psr==1:
                     equally = round(pr/no_partner)
                     
                     for key1 in d_cap:
-                        code21='''update account set Dr_Amount='{0}'
-                        where Dr_Particulars = '{1}' '''. format(equally, key1)
+                        code21='''update account set Dr_Amount="{0}" where Dr_Particulars = "{1}" '''. format(equally, key1)
                         mycursor.execute(code21)
 
                 if psr==2:
@@ -266,65 +250,65 @@ if net_pr_lo==1:
                     for key2 in d_psr:
                         res_ratio = round(pr/total_ratio * d_psr[key2])
 
-                        code22='''update account set Dr_Amount='{0}'
-                        where Dr_Particulars = '{1}' '''. format(res_ratio, key2)
+                        code22='''update account set Dr_Amount="{0}" where Dr_Particulars = "{1}" '''. format(res_ratio, key2)
                         mycursor.execute(code22)
 
-                print('\nUpdated successfully')
-                
-                # Displaying the Table in Python
-                mycursor.execute('select * from account')
-                rows = mycursor.fetchall()
+            total1 = cr_ if cr_ >= dr_ else dr_
+            mycursor.execute('update account set Dr_Amount="{0}", Cr_Amount="{1}" where Dr_Amount="{2}"'.format(total1, total1, total))
 
-                print('\n\t\t\t\t\t\tBooks of {}'. format(name_firm) )
-                print('\t\t\t\t\t     Profit and Loss Appropriation A/c')
-                print('\t\t\t\t\t    for the year ended {}'. format(year) )
-               
-                print(tabulate(rows, headers=['Dr_Particulars','Dr_Amount',
-                                                  'Cr_Particulars','Cr_Amount'],
-                               tablefmt='psql'))
+            print('\nUpdated successfully')
+            
+            # Displaying the Table in Python
+            mycursor.execute('select * from account')
+            rows = mycursor.fetchall()
 
-                # Working Notes
-                print('\nWorking Notes:-')
-                
-                print('-> Interest on Capital:')
-                for k in d_cap:
-                    print('\t', k, '-Rs.', d_cap[k][1])
+            print('\n\t\t\t\t\t\tBooks of {}'. format(name_firm) )
+            print('\t\t\t\t\t     Profit and Loss Appropriation A/c')
+            print('\t\t\t\t\t    for the year ended {}'. format(year) )
+           
+            print(tabulate(rows, headers=['Dr_Particulars','Dr_Amount', 'Cr_Particulars','Cr_Amount'],
+                           tablefmt='psql'))
 
-                if dr_sal!=0 :
-                    print('-> Salary:')
-                    for l in d_sal:
-                        print('\t', l, '-Rs.', d_sal[l])
+            # Working Notes
+            print('\nWorking Notes:-')
+            
+            print('-> Interest on Capital:')
+            for k in d_cap:
+                print('\t', k, '-Rs.', d_cap[k][1])
 
-                if dr_com!=0 :
-                    print('-> Commission:')
-                    for m in d_com:
-                        print('\t', m, '-Rs.', d_com[m])
+            if dr_sal!=0 :
+                print('-> Salary:')
+                for l in d_sal:
+                    print('\t', l, '-Rs.', d_sal[l])
 
-                if cr_int_draw!=0:
-                    print('-> Interest on Drawings:')
-                    for n in d_draw:
-                        print('\t', n, '-Rs.', d_draw[n][1])
+            if dr_com!=0 :
+                print('-> Commission:')
+                for m in d_com:
+                    print('\t', m, '-Rs.', d_com[m])
 
-                print('------------------------------')
+            if cr_int_draw!=0:
+                print('-> Interest on Drawings:')
+                for n in d_draw:
+                    print('\t', n, '-Rs.', d_draw[n][1])
 
-            #Deleting General Reserve
-            if m=='n':
-                code23='''delete from account where
-                Dr_Particulars = "To General Reserve A/c" '''
-                mycursor.execute(code23)
+            print('------------------------------')
 
-                dr_ = dr_int_cap + dr_sal + dr_com # Calculating Debit side
-                cr_ = net_pr + cr_int_draw # Calculating Credit side
+        #Deleting General Reserve
+        if m=='n':
+            code23='''delete from account where Dr_Particulars = "To General Reserve A/c" '''
+            mycursor.execute(code23)
 
-                pr = cr_ - dr_
+            dr_ = dr_int_cap + dr_sal + dr_com # Calculating Debit side
+            cr_ = net_pr + cr_int_draw # Calculating Credit side
 
+            pr = cr_ - dr_
+
+            if pr > 0:
                 if psr==1:
                     equally = round(pr/no_partner)
                     
                     for key1 in d_cap:
-                        code24='''update account set Dr_Amount='{0}'
-                        where Dr_Particulars = '{1}' '''. format(equally, key1)
+                        code24='''update account set Dr_Amount="{0}" where Dr_Particulars = "{1}" '''. format(equally, key1)
                         mycursor.execute(code24)
 
                 if psr==2:
@@ -332,51 +316,52 @@ if net_pr_lo==1:
                     for key2 in d_psr:
                         res_ratio = round(pr/total_ratio * d_psr[key2])
 
-                        code25='''update account set Dr_Amount='{0}'
-                        where Dr_Particulars = '{1}' '''. format(res_ratio, key2)
+                        code25='''update account set Dr_Amount="{0}" where Dr_Particulars = "{1}" '''. format(res_ratio, key2)
                         mycursor.execute(code25)
 
-                print('\nDeleted successfully')
-                
-                # Displaying the Table in Python
-                mycursor.execute('select * from account')
-                rows = mycursor.fetchall()
+            total2 = cr_ if cr_ >= dr_ else dr_
+            mycursor.execute('update account set Dr_Amount="{0}", Cr_Amount="{1}" where Dr_Amount="{2}"'.format(total2, total2, total))
 
-                print('\n\t\t\t\t\t\tBooks of {}'. format(name_firm) )
-                print('\t\t\t\t\t     Profit and Loss Appropriation A/c')
-                print('\t\t\t\t\t    for the year ended {}'. format(year) )
-               
-                print(tabulate(rows, headers=['Dr_Particulars','Dr_Amount',
-                                                  'Cr_Particulars','Cr_Amount'],
-                               tablefmt='psql'))
+            print('\nDeleted successfully')
+            
+            # Displaying the Table in Python
+            mycursor.execute('select * from account')
+            rows = mycursor.fetchall()
 
-                # Working Notes
-                print('\nWorking Notes:-')
-                
-                print('-> Interest on Capital:')
-                for k in d_cap:
-                    print('\t', k, '-Rs.', d_cap[k][1])
+            print('\n\t\t\t\t\t\tBooks of {}'. format(name_firm) )
+            print('\t\t\t\t\t     Profit and Loss Appropriation A/c')
+            print('\t\t\t\t\t    for the year ended {}'. format(year) )
+           
+            print(tabulate(rows, headers=['Dr_Particulars','Dr_Amount', 'Cr_Particulars','Cr_Amount'],
+                           tablefmt='psql'))
 
-                if dr_sal!=0 :
-                    print('-> Salary:')
-                    for l in d_sal:
-                        print('\t', l, '-Rs.', d_sal[l])
+            # Working Notes
+            print('\nWorking Notes:-')
+            
+            print('-> Interest on Capital:')
+            for k in d_cap:
+                print('\t', k, '-Rs.', d_cap[k][1])
 
-                if dr_com!=0 :
-                    print('-> Commission:')
-                    for m in d_com:
-                        print('\t', m, '-Rs.', d_com[m])
+            if dr_sal!=0 :
+                print('-> Salary:')
+                for l in d_sal:
+                    print('\t', l, '-Rs.', d_sal[l])
 
-                if cr_int_draw!=0:
-                    print('-> Interest on Drawings:')
-                    for n in d_draw:
-                        print('\t', n, '-Rs.', d_draw[n][1])
+            if dr_com!=0 :
+                print('-> Commission:')
+                for m in d_com:
+                    print('\t', m, '-Rs.', d_com[m])
 
-                print('------------------------------')
+            if cr_int_draw!=0:
+                print('-> Interest on Drawings:')
+                for n in d_draw:
+                    print('\t', n, '-Rs.', d_draw[n][1])
+
+            print('------------------------------')
 
 
-        if ch=='n':
-            print('------------------------------------------------------------')
+    if ch=='n':
+        print('------------------------------------------------------------')
         
 # Incured loss
 if net_pr_lo==2:
@@ -387,26 +372,22 @@ if net_pr_lo==2:
     
     # Inserting Values
     if cr_int_draw!=0 :
-            code26='''insert into account values ("To Profit and Loss A/c (Net Loss)", '{0}',
-            "By Interest on Drawings A/c", '{1}')'''. format(net_lo, cr_int_draw)
+            code26='''insert into account values ("To Profit and Loss A/c (Net Loss)", "{0}", "By Interest on Drawings A/c", "{1}")'''. format(net_lo, cr_int_draw)
             mycursor.execute(code26)
 
     if cr_int_draw==0 :
-        code27='''insert into account (Dr_Particulars,Dr_Amount)
-        values ("To Profit and Loss A/c (Net Loss)", '{0}')'''. format(net_lo)
+        code27='''insert into account (Dr_Particulars,Dr_Amount) values ("To Profit and Loss A/c (Net Loss)", "{0}")'''. format(net_lo)
         mycursor.execute(code27)
 
     # Inserting Distribution of Loss
-    code28='''insert into account (Cr_Particulars)
-    values ("By Loss transferred to Partners' Capital A/c")''' 
+    code28='''insert into account (Cr_Particulars) values ("By Loss transferred to Partners' Capital A/c")''' 
     mycursor.execute(code28)
            
     if psr==1:
         equally = round(lo/no_partner)
 
         for key1 in d_cap:
-            code29='''insert into account (Cr_Particulars,Cr_Amount)
-            values ('{0}','{1}')'''. format(key1, equally)
+            code29='''insert into account (Cr_Particulars,Cr_Amount) values ("{0}","{1}")'''. format(key1, equally)
             mycursor.execute(code29)
 
     if psr==2:
@@ -414,23 +395,19 @@ if net_pr_lo==2:
         for key2 in d_psr:
             res_ratio = round(lo/total_ratio * d_psr[key2] )
 
-            code30='''insert into account(Cr_Particulars,Cr_Amount)
-            values ('{0}','{1}')'''. format(key2, res_ratio)
+            code30='''insert into account(Cr_Particulars,Cr_Amount) values ("{0}","{1}")'''. format(key2, res_ratio)
             mycursor.execute(code30)
 
     # Inserting Total
-    code31='''insert into account (Dr_Amount,Cr_Amount)
-    values ('{0}', '{1}')'''. format('---------', '---------')
+    code31='''insert into account (Dr_Amount,Cr_Amount) values ("{0}", "{1}")'''. format('---------', '---------')
     mycursor.execute(code31)
 
-    total = dr_
+    total = dr_ if cr_ <= dr_ else cr_
 
-    code32='''insert into account (Dr_Amount,Cr_Amount)
-    values ('{0}', '{1}')'''. format(total, total)
+    code32='''insert into account (Dr_Amount,Cr_Amount) values ("{0}", "{1}")'''. format(total, total)
     mycursor.execute(code32)
 
-    code33='''insert into account (Dr_Amount,Cr_Amount)
-    values ('{0}', '{1}')'''. format('---------', '---------')
+    code33='''insert into account (Dr_Amount,Cr_Amount) values ("{0}", "{1}")'''. format('---------', '---------')
     mycursor.execute(code33)
 
     # Displaying the Table in Python
@@ -441,8 +418,7 @@ if net_pr_lo==2:
     print('\t\t\t\t\t     Profit and Loss Appropriation A/c')
     print('\t\t\t\t\t    for the year ended {}'. format(year) )
        
-    print(tabulate(rows, headers=['Dr_Particulars','Dr_Amount',
-                                      'Cr_Particulars','Cr_Amount'],
+    print(tabulate(rows, headers=['Dr_Particulars','Dr_Amount', 'Cr_Particulars','Cr_Amount'],
                    tablefmt='psql'))
 
     # Working Notes
